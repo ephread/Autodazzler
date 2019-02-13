@@ -1,0 +1,17 @@
+{
+    "extends": [
+      "eslint:recommended",
+      "eslint-config-airbnb-es5",
+      "plugin:es5/no-es2015"
+    ],
+    "plugins": [
+      "es5"
+    ],
+    "rules": {
+      "semi": ["error", "always"],
+      "es5/no-modules": "off",
+      "new-cap": "off",
+      "es5/no-block-scoping": ["error", { "let": false, "const": true }],
+      "radix": "off"
+    }
+}

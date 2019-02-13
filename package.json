@@ -1,0 +1,28 @@
+{
+  "name": "autodazzler",
+  "version": "0.1.0",
+  "description": "Batch render for Daz Studio",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ephread/Autodazzler.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "rollup -c"
+  },
+  "author": "Frédéric Maquin <fred@ephread.com> (https://ephread.com/)",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-jest": "^24.1.0",
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-es5": "^1.2.0",
+    "eslint-plugin-es5": "^1.3.1",
+    "jest": "^24.1.0",
+    "prettier": "1.16.4",
+    "rollup": "^1.1.2",
+    "rollup-plugin-cleanup": "^3.1.1"
+  }
+}
