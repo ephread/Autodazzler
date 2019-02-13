@@ -1,5 +1,6 @@
 # ![Autodazzler](https://i.imgur.com/KgX7eIm.jpg)
-
+[![CircleCI](https://circleci.com/gh/ephread/Autodazzler/tree/master.svg?style=shield)](https://circleci.com/gh/ephread/Autodazzler/tree/master)
+[![codecov](https://codecov.io/gh/ephread/Autodazzler/branch/master/graph/badge.svg)](https://codecov.io/gh/ephread/Autodazzler)
 [![License](https://img.shields.io/badge/license-GPL-green.svg)](https://github.com/ephread/autodazzler/blob/master/LICENSE.md)
 
 Autodazzler is a small utility to perform batch rendering in Daz Studio.
@@ -82,7 +83,7 @@ Note that all paths use forward slashes, even if you are working on windows.
         { "Cube 2": "path/to/CubePosePreset.duf" }
     ],
     "changeVisibility": {
-        "Cube 1": { "visible": false }
+        "Cube 1": { "visible": false },
         "Cube 2": { "visible": true, "recursive": true }
     }
 }
@@ -90,7 +91,7 @@ Note that all paths use forward slashes, even if you are working on windows.
 
 ##### Make the object named `Cube 1` visible
 
-```
+```json
 "changeVisibility": {
     "Cube 1": { "visible": true }
 }
@@ -98,7 +99,7 @@ Note that all paths use forward slashes, even if you are working on windows.
 
 ##### Make the object named `Cube 1` and all of its children invisible
 
-```
+```json
 "changeVisibility": {
     "Cube 1": { "visible": false, "recursive": true }
 }
