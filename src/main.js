@@ -4,12 +4,12 @@
 // Licensed under the MIT License.
 // See LICENSE in the project root for license information.
 
-/* global MessageBox App */
+/* global MessageBox App Scene MainWindow */
 
 import { isConfigurationValid } from './lib/validation';
 import { askForConfigurationFilePath } from './lib/ui';
 import { isNullOrUndefined, millisecondsToReadableTime } from './lib/utils';
-import { loadConfigurationFile } from './lib/configuration';
+import { loadConfigurationFile, parseScriptArgs } from './lib/configuration';
 import { renderScenes, TaskResult } from './lib/render';
 import { playSuccessSound } from './lib/sound_player';
 
@@ -19,7 +19,16 @@ import { playSuccessSound } from './lib/sound_player';
  *  @returns {void}
  */
 function runAutodazzler() {
-  var sConfigurationPath = askForConfigurationFilePath();
+  var oArguments = parseScriptArgs(App.scriptArgs);
+
+  var sConfigurationPath;
+  if (oArguments) {
+    sConfigurationPath = oArguments['autodazzlerConfigPath'];
+  }
+
+  if (sConfigurationPath == undefined || sConfigurationPath == null) {
+    var sConfigurationPath = askForConfigurationFilePath();
+  }
 
   if (sConfigurationPath) {
     var oDazzleConfiguration = loadConfigurationFile(sConfigurationPath);
@@ -38,10 +47,10 @@ function runAutodazzler() {
     var analysisResult = renderScenes(oDazzleConfiguration, true);
 
     switch (analysisResult) {
-    case TaskResult.Completed:
-      break;
-    default:
-      return;
+      case TaskResult.Completed:
+        break;
+      default:
+        return;
     }
 
     App.statusLine('[Autodazzle] All good, rendering…', true);
@@ -51,23 +60,30 @@ function runAutodazzler() {
     var elapsedTime = millisecondsToReadableTime(endTime - startTime);
 
     switch (result) {
-    case TaskResult.FailedSilently:
-      MessageBox.information(
-        'Some errors were encountered during the renders, open the log for more information.',
-        '[Autodazzler]',
-        '&OK'
-      );
-      break;
-    case TaskResult.Completed:
-      playSuccessSound();
-      MessageBox.information(
-        'All renders successfully completed in:\n' + elapsedTime + '.',
-        '[Autodazzler]',
-        '&OK'
-      );
-      break;
-    default:
-      break;
+      case TaskResult.FailedSilently:
+        MessageBox.information(
+          'Some errors were encountered during the renders, open the log for more information.',
+          '[Autodazzler]',
+          '&OK'
+        );
+        break;
+      case TaskResult.Completed:
+        var sMessage = 'All renders successfully completed in:\n' + elapsedTime + '.';
+
+        playSuccessSound();
+
+        // SLEEP for a bit.
+        if (oSceneConfiguration.quitAfterCompletion) {
+          // TODO: Check that.
+          Scene.clear();
+          MainWindow.close();
+          debug('[Autodazzler] ' + sMessage);
+        } else {
+          MessageBox.information(sMessage, '[Autodazzler]', '&OK');
+        }
+        break;
+      default:
+        break;
     }
   }
 }

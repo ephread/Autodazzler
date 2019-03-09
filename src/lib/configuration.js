@@ -115,3 +115,43 @@ export function createStepContext(nSceneIndex, nRenderIndex, bAbortOnError) {
     }
   };
 }
+
+/**
+ * Parse arguments provided to Daz Studio through -scriptArgs.
+ * The expected format is `<key>=<value>` with <key> containing only letters
+ * and value being either a string (single or double quoted), a number or
+ * a bolean (`true` or `false`).
+ *
+ * @param { number } aScriptArgs an array of arguments retrieved from the
+ *                               Studio.
+ *
+ * @returns { object } An object containg `<key>=<value>` pairs.
+ */
+export function parseScriptArgs(aScriptArgs) {
+  if (aScriptArgs.length == 0) { return null }
+
+  var oParsedArguments = {}
+  for (var i = 0; i < aScriptArgs.length; i++) {
+    var sArgString = aScriptArgs[i]
+
+    var aMatches = /^([a-zA-Z]+)=('.*'|".*"|true|false|[0-9]+)$/.exec(sArgString)
+    if (aMatches && aMatches.length == 3) {
+      var aStringMatches = /^(\".*\")|(\'.*\')$/g.exec(aMatches[2])
+      if (aStringMatches && aStringMatches.length >= 2) {
+       value = aStringMatches[1]
+      }
+
+      oParsedArguments[aMatches[1]] = aMatches[2]
+    } else {
+      MessageBox.information(
+        'Argument: ' + sArgString + ' is malformed.',
+        '[Autodazzler]',
+        '&OK'
+      );
+
+      return null
+    }
+  }
+
+  return oParsedArguments
+}

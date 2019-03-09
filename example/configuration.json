@@ -3,6 +3,7 @@
     "renderDirectoryPath": "D:/Daz/Tests/Renders",
     "abortOnError": false,
     "overwrite": true,
+    "quitAfterCompletion": true,
     "renderConfigurations": [{
         "cameraName": "Camera 1",
         "renderFilename": "Cube 1.png"

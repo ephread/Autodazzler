@@ -21,6 +21,34 @@ Head over the [release section](https://github.com/ephread/Autodazzler/releases)
 
 Upon opening the script, Daz Studio will ask you to locate the appropriate configuration file. It will then perform all the renders defined in the configuration file.
 
+Alternatively, you can run Autodazzler from the command line.
+
+### macOS
+
+```bash
+$ <pathToDazStudio.app>/Contents/MacOS/DAZStudio <pathToAutodazzler.dsa> -scriptArg "autodazzlerConfigPath='<pathToConfigurationPath.json>'"
+```
+For instance, with the default installation path, assuming that both Autodazzler.dsa and the configuration are in the current directory (`/User/ephread/Daz/`), you would need to run:
+
+```bash
+$ /Applications/DAZ\ 3D/DAZStudio4\ 64-bit/DAZStudio.app/Contents/MacOS/DAZStudio Autodazzler.dsa -scriptArg "autodazzlerConfigPath='/User/ephread/Daz/config.json'"
+```
+
+### Windows
+
+```powershell
+> <pathToDazStudio.exe> <pathToAutodazzler.dsa> -scriptArg "autodazzlerConfigPath='<pathToConfigurationPath.json>'"
+```
+
+For instance, with the default installation path, assuming that both Autodazzler.dsa and the configuration are in the current directory (`C:\Users\ephread\config.json`), you would need to run:
+
+
+```powershell
+> C:\Programs\DazStudio\DazStudio.exe Autodazzler.dsa -scriptArg "autodazzlerConfigPath='C:/Users/ephread/config.json'"
+```
+
+⚠️ Note that forward slashes should be used in the `-scriptArg` argument.
+
 ## Writing a configuration file
 
 Autodazzler works in the following way.
@@ -50,13 +78,14 @@ Note that all paths use forward slashes, even if you are working on windows.
 
 ```json
 [{
-	 "scenePath": "path/to/scene1.duf",
+    "scenePath": "path/to/scene1.duf",
     "renderDirectoryPath": "path/to/renders",
     "abortOnError": false,
     "overwrite": true,
+    "quitAfterCompletion": true,
     "renderConfigurations": []
 }, {
-	 "scenePath": "path/to/scene2.duf",
+    "scenePath": "path/to/scene2.duf",
     "renderDirectoryPath": "path/to/renders",
     "abortOnError": true,
     "overwrite": false,
@@ -69,8 +98,8 @@ Note that all paths use forward slashes, even if you are working on windows.
 - `cameraName`: (`string`) the name of the camera to use;
 - `renderFilename `: (`string`) the name of the render;
 - `presets`: (`array`) contains zero or more of:
-	- (`string`) a path pointing a preset that should be applied globally;
-	- (`object` / `key: value`) a pair where the value a path pointing a preset and the key is the name of the object to which the preset should be applied; this is typically usueful to change poses between renders;
+    - (`string`) a path pointing a preset that should be applied globally;
+    - (`object` / `key: value`) a pair where the value a path pointing a preset and the key is the name of the object to which the preset should be applied; this is typically usueful to change poses between renders;
 - `changeVisibility `: (`object`) an object defining the visibility of the obkject named by the key and whether the change should be applied to all its children (`"recursive": true`); by default visibility changes won't be recursive (see below for the format).
 
 #### Example
