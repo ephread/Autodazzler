@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-/* global Scene App DzRenderOptions DzViewRenderHandler DzFileInfo DzDir debug sleep */
+/* global Scene App debug sleep */
 
 import {
   isNullOrUndefined,
@@ -202,7 +202,11 @@ function renderUsingConfigurations(
   );
 
   if (!bIsTestModeActive) {
-    if (!oRenderMgr.doRender()) {
+    var oRenderOptions = App.getRenderMgr().getRenderOptions()
+    oRenderOptions.renderImgFilename = sTargetFilename
+    oRenderOptions.renderImgToId = oRenderOptions.DirectToFile
+
+    if (!oRenderMgr.doRender(oRenderOptions)) {
       if (oSceneConfiguration.abortOnError) {
         const message =
           'The render was either canceled or encountered an error. ' +
@@ -212,17 +216,6 @@ function renderUsingConfigurations(
 
       return TaskResult.Failed;
     }
-
-    var sLastRender = oRenderMgr.getLastSavedRenderPath();
-    if (sLastRender.isEmpty()) {
-      return TaskResult.Failed;
-    }
-
-    var oFile = new DzFileInfo(sLastRender);
-    var sSrcFilename = String('%1.%2').arg(oFile.baseName()).arg(oFile.extension());
-    var oDir = new DzDir(oFile.path());
-
-    oDir.copy(sSrcFilename, sTargetFilename);
 
     var endTime = Date.now();
     var elapsedTime = millisecondsToReadableTime(endTime - startTime);
