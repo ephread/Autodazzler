@@ -141,7 +141,14 @@ export function parseScriptArgs(aScriptArgs) {
     var aMatches = /^([a-zA-Z]+)=(.*)$/g.exec(sArgString)
 
     if (aMatches && aMatches.length == 3) {
-      oParsedArguments[aMatches[1]] = aMatches[2]
+      // Strip quotes if necessary.
+      var value = aMatches[2]
+      var aStringMatches = /^(?:\"(.*)\")|(?:\'(.*)\')$/g.exec(aMatches[2])
+      if (aStringMatches && aStringMatches.length == 3) {
+        value = aStringMatches[1] || aStringMatches[2]
+      }
+
+      oParsedArguments[aMatches[1]] = value
     } else {
       MessageBox.information(
         'Argument: ' + sArgString + ' is malformed.',

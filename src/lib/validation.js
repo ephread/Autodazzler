@@ -166,12 +166,6 @@ function isSceneConfigurationValid(oSceneConfiguration, oStepContext) {
  * @returns {boolean} true if the configuration is valid, `false` otherwise.
  */
 function isRenderConfigurationValid(oRenderConfiguration, oSceneConfiguration, oStepContext) {
-  if (isNullOrUndefined(oRenderConfiguration.cameraName)) {
-    showConfigurationError('`cameraName` is not a valid string.', oStepContext);
-
-    return false;
-  }
-
   if (isNullOrUndefined(oRenderConfiguration.renderFilename)) {
     showConfigurationError('`renderFilename` is not a valid string.', oStepContext);
 
