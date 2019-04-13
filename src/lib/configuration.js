@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-/* global DzFile MessageBox */
+/* global DzFile MessageBox debug */
 
 import { isNullOrUndefined } from './utils';
 
@@ -25,7 +25,7 @@ import { isNullOrUndefined } from './utils';
  * @returns {object} the loaded configuration as a plain script object.
  */
 export function loadConfigurationFile(sConfigurationPath) {
-  var oConfigurationFile = DzFile(sConfigurationPath);
+  var oConfigurationFile = new DzFile(sConfigurationPath);
 
   if (!oConfigurationFile.exists()) {
     MessageBox.critical(
@@ -81,16 +81,21 @@ export function updateSceneConfigurationWithDefaults(oSceneConfiguration) {
  * @param { number } nSceneIndex index of the Scene in the related configuration array
  * @param { number } nRenderIndex index of the Render in the related configuration array
  * @param { boolean } bAbortOnError a optional value indicating whether or not the user
- *                                  expects autodazzler to stop on error.
+ *                                  expects autodazzler to stop on error;
+*                                   defaults to `true`.
+ * @param { boolean } bInteractive a optional value indicating whether or autodazzler
+ *                                 should display messages (`interative` = `true`);
+ *                                 defaults to `true`.
  *
  * @returns { object } An fairly simple object which can output the context through
  *                    `getReadableMessage()`
  */
-export function createStepContext(nSceneIndex, nRenderIndex, bAbortOnError) {
+export function createStepContext(nSceneIndex, nRenderIndex, bAbortOnError, bInteractive) {
   return {
     sceneIndex: nSceneIndex,
     renderIndex: nRenderIndex,
     abortOnError: isNullOrUndefined(bAbortOnError) ? true : bAbortOnError,
+    interactive: isNullOrUndefined(bInteractive) ? true : bInteractive,
     getReadableMessage: function getReadableMessage() {
       if (isNullOrUndefined(this.sceneIndex) && isNullOrUndefined(this.renderIndex)) {
         return '';
@@ -133,14 +138,9 @@ export function parseScriptArgs(aScriptArgs) {
   var oParsedArguments = {}
   for (var i = 0; i < aScriptArgs.length; i++) {
     var sArgString = aScriptArgs[i]
+    var aMatches = /^([a-zA-Z]+)=(.*)$/g.exec(sArgString)
 
-    var aMatches = /^([a-zA-Z]+)=('.*'|".*"|true|false|[0-9]+)$/.exec(sArgString)
     if (aMatches && aMatches.length == 3) {
-      var aStringMatches = /^(\".*\")|(\'.*\')$/g.exec(aMatches[2])
-      if (aStringMatches && aStringMatches.length >= 2) {
-       value = aStringMatches[1]
-      }
-
       oParsedArguments[aMatches[1]] = aMatches[2]
     } else {
       MessageBox.information(

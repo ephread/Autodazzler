@@ -40,7 +40,7 @@ $ /Applications/DAZ\ 3D/DAZStudio4\ 64-bit/DAZStudio.app/Contents/MacOS/DAZStudi
 > <pathToDazStudio.exe> <pathToAutodazzler.dsa> -scriptArg "autodazzlerConfigPath='<pathToConfigurationPath.json>'"
 ```
 
-For instance, with the default installation path, assuming that both Autodazzler.dsa and the configuration are in the current directory (`C:\Users\ephread\config.json`), you would need to run:
+For instance, with the default installation path, Autodazzler.dsa is in the current directory (`C:\Users\ephread\config.json`), you would need to run:
 
 
 ```powershell
@@ -65,6 +65,23 @@ You can configure the renders by supplying a JSON configuration file. A full exa
 The top level object is an array, containing configuration objects for each scene you need to render.
 
 Note that all paths use forward slashes, even if you are working on windows.
+
+### Top Level Configuration
+
+- `interactive `: if set to `true` errors, warnings and the completion of the process might trigger popup dialogs; if set to `false`, warning and errors will only be written to the log file.
+- `quitAutomatically`: `true` to quit Daz Studio automatically after the render, `false` to keep it alive.
+
+```json
+{
+    "interactive": false,
+    "quitAutomatically": true,
+    "scenes": [...]
+}
+```
+
+Note that is left unspecified, `interactive` and `quitAutomatically` will be inferred from the context. For instance, if you run Daz Studio from the command line and provide a configuration through `-scriptArg`, `interactive` will be set to `false` and `quitAutomatically` will be set to `true`. Vice versa if you provide the configuration from the dialog box.
+
+You also can't set `quitAutomatically` to `true` if you also set `interactive` to `false`.
 
 ### Scene Configuration
 
@@ -95,12 +112,12 @@ Note that all paths use forward slashes, even if you are working on windows.
 
 ### Render Configuration
 
-- `cameraName`: (`string`) the name of the camera to use;
+- `cameraName`: (`string`) the name of the camera to use; this parameter is optional, if not specified, Autodazzler will fallback to the camera selected in the scene;
 - `renderFilename `: (`string`) the name of the render;
 - `presets`: (`array`) contains zero or more of:
     - (`string`) a path pointing a preset that should be applied globally;
     - (`object` / `key: value`) a pair where the value a path pointing a preset and the key is the name of the object to which the preset should be applied; this is typically usueful to change poses between renders;
-- `changeVisibility `: (`object`) an object defining the visibility of the obkject named by the key and whether the change should be applied to all its children (`"recursive": true`); by default visibility changes won't be recursive (see below for the format).
+- `changeVisibility `: (`object`) an object defining the visibility of the object named by the key and whether the change should be applied to all its children (`"recursive": true`); by default visibility changes won't be recursive (see below for the format).
 
 #### Example
 

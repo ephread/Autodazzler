@@ -1,34 +1,37 @@
-[{
-    "scenePath": "D:/Daz/Tests/Test.duf",
-    "renderDirectoryPath": "D:/Daz/Tests/Renders",
-    "abortOnError": false,
-    "overwrite": true,
-    "quitAfterCompletion": true,
-    "renderConfigurations": [{
-        "cameraName": "Camera 1",
-        "renderFilename": "Cube 1.png"
-    }, {
-        "cameraName": "Camera 2",
-        "renderFilename": "Cube 2.png",
-        "presets": [
-            "D:/Daz/Presets/CubeRenderPreset.duf",
-            { "Cube 1": "D:/Daz/Presets/CubePosePreset.duf" }
-        ],
-        "changeVisibility": {
-            "Cube 1": { "visible": false }
-        }
-    }, {
-        "cameraName": "Camera 3",
-        "renderFilename": "Cube 2.png",
-        "changeVisibility": {
-            "Cube 3": { "visible": false }
-        }
-    }, {
-        "cameraName": "Camera 4",
-        "renderFilename": "Cube 4.png",
-        "changeVisibility": {
-            "Cube 1": { "visible": true, "recursive": true },
-            "Cube 2": { "visible": true, "recursive": true }
-        }
+{
+    "interactive": false,
+    "quitAutomatically": true,
+    "scenes": [{
+        "scenePath": "D:/Daz/Tests/Test.duf",
+        "renderDirectoryPath": "D:/Daz/Tests/Renders",
+        "abortOnError": false,
+        "overwrite": true,
+        "renderConfigurations": [{
+            "cameraName": "Camera 1",
+            "renderFilename": "Cube 1.png"
+        }, {
+            "cameraName": "Camera 2",
+            "renderFilename": "Cube 2.png",
+            "presets": [
+                "D:/Daz/Presets/CubeRenderPreset.duf",
+                { "Cube 1": "D:/Daz/Presets/CubePosePreset.duf" }
+            ],
+            "changeVisibility": {
+                "Cube 1": { "visible": false }
+            }
+        }, {
+            "cameraName": "Camera 3",
+            "renderFilename": "Cube 2.png",
+            "changeVisibility": {
+                "Cube 3": { "visible": false }
+            }
+        }, {
+            "cameraName": "Camera 4",
+            "renderFilename": "Cube 4.png",
+            "changeVisibility": {
+                "Cube 1": { "visible": true, "recursive": true },
+                "Cube 2": { "visible": true, "recursive": true }
+            }
+        }]
     }]
-}]
+}

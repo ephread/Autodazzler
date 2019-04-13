@@ -33,7 +33,7 @@ export function playSuccessSound() {
  */
 function playSound(sSoundName) {
   var nPlatform = App.platform();
-  var oCurrentScriptInfo = DzFileInfo(getScriptFileName());
+  var oCurrentScriptInfo = new DzFileInfo(getScriptFileName());
   var sResourceDirectoryPath = oCurrentScriptInfo.path() + '/resources/';
   var oAudioClip;
 
