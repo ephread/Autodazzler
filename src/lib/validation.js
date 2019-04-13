@@ -14,27 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-/* global DzFileInfo */
+/* global DzFileInfo debug */
 
 import { showConfigurationError, isNullOrUndefined, fullRenderPath } from './utils';
 import { createStepContext } from './configuration';
 
 export function isConfigurationValid(oAutodazzlerConfiguration) {
-  if (!(oAutodazzlerConfiguration instanceof Array) || oAutodazzlerConfiguration.length === 0) {
-    showConfigurationError('The configuration file did not contain any definitions.', null);
+  if (!(oAutodazzlerConfiguration instanceof Object)) {
+    showConfigurationError('The configuration file is malformed, the root must be an object.', null);
     return false;
   }
 
-  for (var i = 0; i < oAutodazzlerConfiguration.length; i++) {
-    var oSceneStepContext = createStepContext(i, null, true);
-    var oSceneConfiguration = oAutodazzlerConfiguration[i];
+  if (!(oAutodazzlerConfiguration.scenes instanceof Array) || oAutodazzlerConfiguration.scenes.length === 0) {
+    showConfigurationError('The configuration file did not contain any scene definitions.', null);
+    return false;
+  }
+
+  for (var i = 0; i < oAutodazzlerConfiguration.scenes.length; i++) {
+    var oSceneStepContext = createStepContext(i, null, true, true);
+    var oSceneConfiguration = oAutodazzlerConfiguration.scenes[i];
 
     if (!isSceneConfigurationValid(oSceneConfiguration, oSceneStepContext)) {
       return false;
     }
 
     for (var j = 0; j < oSceneConfiguration.renderConfigurations.length; j++) {
-      var oRenderStepContext = createStepContext(i, j, true);
+      var oRenderStepContext = createStepContext(i, j, true, true);
       var oRenderConfiguration = oSceneConfiguration.renderConfigurations[j];
 
       if (
@@ -44,6 +49,50 @@ export function isConfigurationValid(oAutodazzlerConfiguration) {
       }
     }
   }
+
+  return true;
+}
+
+/**
+ * Checks that the given render configuration is valid.
+ *
+ * @param {object} oRenderConfiguration the configuration to check.
+ * @param {object} oSceneConfiguration the scene configuration to check against.
+ * @param {object} oStepContext the context of the current step.
+ * @param {object} bIsValidating `true` if called during validation, `false` overwise.
+ *
+ * @returns {boolean} `true` if it's possible to write a file, `false` otherwise.
+ */
+export function canWriteRenderFile(
+  oRenderConfiguration,
+  oSceneConfiguration,
+  oStepContext,
+  bIsValidating
+) {
+  if (!oSceneConfiguration.overwrite) {
+    var sRenderSavePath = fullRenderPath(oSceneConfiguration, oRenderConfiguration);
+
+    var oRenderSaveFileInfo = new DzFileInfo(sRenderSavePath);
+    if (oRenderSaveFileInfo.exists()) {
+      const message =
+        "The render would be saved at '" +
+        sRenderSavePath +
+        "', but there is already a file there. To allow overwriting files," +
+        'set `overwrite` to `true`.';
+
+      if (!bIsValidating) {
+        debug("[Autodazzler] " + message)
+      }
+
+      if (bIsValidating || oStepContext.interactive) {
+        showConfigurationError(message, oStepContext);
+      }
+
+      return false;
+    }
+  }
+
+  // Handle the case of a directory.
 
   return true;
 }
@@ -64,7 +113,7 @@ function isSceneConfigurationValid(oSceneConfiguration, oStepContext) {
     return false;
   }
 
-  var sSceneFileInfo = DzFileInfo(oSceneConfiguration.scenePath);
+  var sSceneFileInfo = new DzFileInfo(oSceneConfiguration.scenePath);
   if (!sSceneFileInfo.exists()) {
     const message = "Scene does not exist at '" + oSceneConfiguration.scenePath + "'.";
     showConfigurationError(message, oStepContext);
@@ -78,7 +127,7 @@ function isSceneConfigurationValid(oSceneConfiguration, oStepContext) {
     return false;
   }
 
-  var oRenderDirectoryInfo = DzFileInfo(oSceneConfiguration.renderDirectoryPath);
+  var oRenderDirectoryInfo = new DzFileInfo(oSceneConfiguration.renderDirectoryPath);
   if (!(oRenderDirectoryInfo.exists() && oRenderDirectoryInfo.isDir())) {
     const message =
       "The render directory '" + oSceneConfiguration.renderDirectoryPath + "' does not exist.";
@@ -129,20 +178,9 @@ function isRenderConfigurationValid(oRenderConfiguration, oSceneConfiguration, o
     return false;
   }
 
-  if (!oSceneConfiguration.overwrite) {
-    var sRenderSavePath = fullRenderPath(oSceneConfiguration, oRenderConfiguration);
-
-    var oRenderSaveFileInfo = DzFileInfo(sRenderSavePath);
-    if (oRenderSaveFileInfo.exists()) {
-      const message =
-        "The render would be saved at '" +
-        sRenderSavePath +
-        "', but there is already a file there. To allow overwriting files," +
-        'set `overwrite` to `true`.';
-      showConfigurationError(message, oStepContext);
-
-      return false;
-    }
+  var bCanWrite = canWriteRenderFile(oRenderConfiguration, oSceneConfiguration, oStepContext, true)
+  if (!bCanWrite) {
+    return false;
   }
 
   if (
@@ -245,7 +283,7 @@ function isVisibilityConfigurationValid(oVisibilityConfiguration, oStepContext) 
 }
 
 function checkThatPresetExists(sPreset, oStepContext) {
-  var oPresetInfo = DzFileInfo(sPreset);
+  var oPresetInfo = new DzFileInfo(sPreset);
 
   if (!oPresetInfo.exists()) {
     showConfigurationError("The preset '" + sPreset + "' does not exist.", oStepContext);

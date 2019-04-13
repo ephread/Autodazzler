@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-/* global Scene App DzRenderOptions DzViewRenderHandler DzFileInfo DzDir debug sleep */
+/* global Scene App debug sleep */
 
 import {
   isNullOrUndefined,
@@ -33,6 +33,7 @@ import {
   applyVisibilities
 } from './scene_setup';
 import { askUserIfTheyWantToStopAutodazzler } from './ui';
+import { canWriteRenderFile } from './validation';
 
 export const TaskResult = {
   Completed: 1,
@@ -57,7 +58,8 @@ export function renderScenes(oAutodazzlerConfiguration, bIsTestModeActive) {
     var oSceneStepContext = createStepContext(
       i,
       null,
-      oSceneConfiguration.abortOnError
+      oSceneConfiguration.abortOnError,
+      oSceneConfiguration.interactive
     );
     oSceneConfiguration = updateSceneConfigurationWithDefaults(
       oSceneConfiguration
@@ -92,7 +94,8 @@ export function renderScenes(oAutodazzlerConfiguration, bIsTestModeActive) {
       var oRenderStepContext = createStepContext(
         i,
         j,
-        oSceneConfiguration.abortOnError
+        oSceneConfiguration.abortOnError,
+        oSceneConfiguration.interactive
       );
       var oRenderConfiguration = oSceneConfiguration.renderConfigurations[j];
 
@@ -182,19 +185,21 @@ function renderUsingConfigurations(
 
   Scene.update();
 
-  var oCamera = Scene.findCameraByLabel(oRenderConfiguration.cameraName);
+  if (oRenderConfiguration.cameraName) {
+    var oCamera = Scene.findCameraByLabel(oRenderConfiguration.cameraName);
 
-  if (isNullOrUndefined(oCamera)) {
-    const message =
-      "The camera named '" +
-      oRenderConfiguration.cameraName +
-      "' wasn't found in the scene.";
-    showOrLogError(message, oStepContext);
+    if (isNullOrUndefined(oCamera)) {
+      const message =
+        "The camera named '" +
+        oRenderConfiguration.cameraName +
+        "' wasn't found in the scene.";
+      showOrLogError(message, oStepContext);
 
-    return TaskResult.NotStarted;
+      return TaskResult.NotStarted;
+    }
+
+    o3dViewport.setCamera(oCamera);
   }
-
-  o3dViewport.setCamera(oCamera);
 
   var sTargetFilename = fullRenderPath(
     oSceneConfiguration,
@@ -202,7 +207,30 @@ function renderUsingConfigurations(
   );
 
   if (!bIsTestModeActive) {
-    if (!oRenderMgr.doRender()) {
+    var oRenderOptions = App.getRenderMgr().getRenderOptions()
+    oRenderOptions.renderImgFilename = sTargetFilename
+    oRenderOptions.renderImgToId = oRenderOptions.DirectToFile
+
+    var bCanWrite = canWriteRenderFile(oRenderConfiguration, oSceneConfiguration, oStepContext, false)
+    if (!bCanWrite) {
+      return TaskResult.Failed;
+    }
+
+    if (oSceneConfiguration.overwrite) {
+      var oFile = new DzFileInfo(sTargetFilename);
+      if (oFile.exists()) {
+        if (oFile.isDir()) {
+          const message =
+            'Autodazzler will not overwrite a directory, aborting the current render.';
+          showOrLogError(message, oStepContext);
+          return TaskResult.Failed;
+        } else {
+          oFile.remove()
+        }
+      }
+    }
+
+    if (!oRenderMgr.doRender(oRenderOptions)) {
       if (oSceneConfiguration.abortOnError) {
         const message =
           'The render was either canceled or encountered an error. ' +
@@ -212,17 +240,6 @@ function renderUsingConfigurations(
 
       return TaskResult.Failed;
     }
-
-    var sLastRender = oRenderMgr.getLastSavedRenderPath();
-    if (sLastRender.isEmpty()) {
-      return TaskResult.Failed;
-    }
-
-    var oFile = new DzFileInfo(sLastRender);
-    var sSrcFilename = String('%1.%2').arg(oFile.baseName()).arg(oFile.extension());
-    var oDir = new DzDir(oFile.path());
-
-    oDir.copy(sSrcFilename, sTargetFilename);
 
     var endTime = Date.now();
     var elapsedTime = millisecondsToReadableTime(endTime - startTime);

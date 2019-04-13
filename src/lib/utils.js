@@ -45,19 +45,19 @@ export function showConfigurationError(sMessage, oStepContext) {
  * @returns {void}
  */
 export function showOrLogError(sMessage, oStepContext) {
-  var bWarnUser = true;
+  var bShowMessage = true;
   var sErrorMessage = sMessage;
 
   if (oStepContext) {
     sErrorMessage += ' ' + oStepContext.getReadableMessage();
     sErrorMessage = sErrorMessage.trim();
-    bWarnUser = oStepContext.abortOnError;
+    bShowMessage = oStepContext.interactive;
   }
 
-  if (bWarnUser) {
+  debug('[Autodazzler] ' + sErrorMessage);
+
+  if (bShowMessage) {
     MessageBox.critical(sErrorMessage, 'Autodazzler Render Error', '&OK');
-  } else {
-    debug('[Autodazzler] ' + sErrorMessage);
   }
 }
 
