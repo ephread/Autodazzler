@@ -11,6 +11,7 @@ Autodazzler is a small utility to perform batch rendering in Daz Studio.
 
   * [Getting Started](#getting-started)
   * [Writing a configuration file](#writing-a-configuration-file)
+  	* [Top Level Configuration](#top-level-configuration)
   	* [Scene Configuration](#scene-configuration)
   	* [Render Configuration](#render-configuration)
   * [License](#license)
@@ -75,7 +76,7 @@ Note that all paths use forward slashes, even if you are working on windows.
 {
     "interactive": false,
     "quitAutomatically": true,
-    "scenes": [...]
+    "scenes": []
 }
 ```
 
