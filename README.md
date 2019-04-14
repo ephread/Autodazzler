@@ -35,20 +35,24 @@ For instance, with the default installation path, assuming that both Autodazzler
 $ /Applications/DAZ\ 3D/DAZStudio4\ 64-bit/DAZStudio.app/Contents/MacOS/DAZStudio Autodazzler.dsa -scriptArg "autodazzlerConfigPath='/User/ephread/Daz/config.json'"
 ```
 
+⚠️ `autodazzlerConfigPath` should be absolute.
+
 ### Windows
 
 ```powershell
 > <pathToDazStudio.exe> <pathToAutodazzler.dsa> -scriptArg "autodazzlerConfigPath='<pathToConfigurationPath.json>'"
 ```
 
-For instance, with the default installation path, Autodazzler.dsa is in the current directory (`C:\Users\ephread\config.json`), you would need to run:
+For instance, with the default installation path and Autodazzler.dsa in the current directory (`C:\Users\ephread\Daz\`), you would need to run:
 
 
 ```powershell
-> C:\Programs\DazStudio\DazStudio.exe Autodazzler.dsa -scriptArg "autodazzlerConfigPath='C:/Users/ephread/config.json'"
+> C:\Programs\DazStudio\DazStudio.exe Autodazzler.dsa -scriptArg "autodazzlerConfigPath='C:/Users/ephread/Daz/config.json'"
 ```
 
 ⚠️ Note that forward slashes should be used in the `-scriptArg` argument.
+
+⚠️ `autodazzlerConfigPath` should be absolute.
 
 ## Writing a configuration file
 
