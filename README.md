@@ -122,7 +122,7 @@ You also can't set `quitAutomatically` to `true` if you also set `interactive` t
 - `presets`: (`array`) contains zero or more of:
     - (`string`) a path pointing a preset that should be applied globally;
     - (`object` / `key: value`) a pair where the value a path pointing a preset and the key is the name of the object to which the preset should be applied; this is typically usueful to change poses between renders;
-- `changeVisibility `: (`object`) an object defining the visibility of the object named by the key and whether the change should be applied to all its children (`"recursive": true`); by default visibility changes won't be recursive (see below for the format).
+- `visibilities`: (`object`) an object defining the visibility of the object named by the key and whether the change should be applied to all its children (`"recursive": true`); by default visibility changes won't be recursive (see below for the format).
 
 #### Example
 
@@ -135,7 +135,7 @@ You also can't set `quitAutomatically` to `true` if you also set `interactive` t
         { "Cube 1": "path/to/CubePosePreset.duf" }
         { "Cube 2": "path/to/CubePosePreset.duf" }
     ],
-    "changeVisibility": {
+    "visibilities": {
         "Cube 1": { "visible": false },
         "Cube 2": { "visible": true, "recursive": true }
     }
@@ -145,7 +145,7 @@ You also can't set `quitAutomatically` to `true` if you also set `interactive` t
 ##### Make the object named `Cube 1` visible
 
 ```json
-"changeVisibility": {
+"visibilities": {
     "Cube 1": { "visible": true }
 }
 ```
@@ -153,7 +153,7 @@ You also can't set `quitAutomatically` to `true` if you also set `interactive` t
 ##### Make the object named `Cube 1` and all of its children invisible
 
 ```json
-"changeVisibility": {
+"visibilities": {
     "Cube 1": { "visible": false, "recursive": true }
 }
 ```

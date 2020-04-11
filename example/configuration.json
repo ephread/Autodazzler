@@ -16,19 +16,19 @@
                 "D:/Daz/Presets/CubeRenderPreset.duf",
                 { "Cube 1": "D:/Daz/Presets/CubePosePreset.duf" }
             ],
-            "changeVisibility": {
+            "visibilities": {
                 "Cube 1": { "visible": false }
             }
         }, {
             "cameraName": "Camera 3",
             "renderFilename": "Cube 2.png",
-            "changeVisibility": {
+            "visibilities": {
                 "Cube 3": { "visible": false }
             }
         }, {
             "cameraName": "Camera 4",
             "renderFilename": "Cube 4.png",
-            "changeVisibility": {
+            "visibilities": {
                 "Cube 1": { "visible": true, "recursive": true },
                 "Cube 2": { "visible": true, "recursive": true }
             }
