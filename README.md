@@ -56,6 +56,13 @@ For instance, with the default installation path and Autodazzler.dsa in the curr
 
 ## Writing a configuration file
 
+|                  🇫🇷 **French speakers** 🇫🇷                  |
+|-----------------------------------------------------------|
+|[@Astuceman] recorded a [nice video tutorial] just for you!|
+
+[@Astuceman]: https://github.com/Astuceman
+[nice video tutorial]: https://youtu.be/wJXKW6pi3-o
+
 Autodazzler works in the following way.
 
 1. Load the first scene configuration.
