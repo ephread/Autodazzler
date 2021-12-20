@@ -1,0 +1,40 @@
+name: build
+
+on:
+  push:
+    branches:
+    - main
+    - github-actions
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  test:
+    name: Test & Build
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Cache Dependencies
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build DSA
+        run: npm run build
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
