@@ -1,6 +1,6 @@
 # ![Autodazzler](https://i.imgur.com/KgX7eIm.jpg)
 
-[![CircleCI](https://circleci.com/gh/ephread/Autodazzler/tree/master.svg?style=shield)](https://circleci.com/gh/ephread/Autodazzler/tree/master)
+[![build](https://github.com/ephread/Autodazzler/actions/workflows/build.yml/badge.svg)](https://github.com/ephread/Autodazzler/actions/workflows/build.yml)
 [![codebeat badge](https://codebeat.co/badges/0ca53387-6f52-4349-8b41-b02fd7ae0786)](https://codebeat.co/projects/github-com-ephread-autodazzler-master)
 [![codecov](https://codecov.io/gh/ephread/Autodazzler/branch/master/graph/badge.svg)](https://codecov.io/gh/ephread/Autodazzler)
 [![License](https://img.shields.io/badge/license-GPL-green.svg)](https://github.com/ephread/autodazzler/blob/master/LICENSE.md)
